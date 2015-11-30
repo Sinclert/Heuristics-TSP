@@ -90,8 +90,7 @@ public class HK_Paths {
         int optimal = 0;
         for (int i = 0; i < numSolutions; i++) {
 
-            // IF THIS LINE IS UNCOMMENTED, THE USER CAN SEE ALL THE POSSIBLE PATHS WITH THEIR DISTANCES
-            // System.out.print("Path: " + paths[i] + ". Distance = " + finalResults[i] + "\n");
+            System.out.print("Path: " + paths[i] + ". Distance = " + finalResults[i] + "\n");
 
             // When we reach the optimal one, its index is saved
             if (finalResults[i] == distance) {
