@@ -1,17 +1,36 @@
-# Held-Karp
-This repository contains 2 implementations of the Held-Karp algorithms. This algorithm is a brute search algorithm which belong to the family of the "branch and bound" ones.
+# Travelling Salesman Problem
 
-An algorithm that belongs to the "Branch and bound" is usually solve in problems where we want to obtain the best solution given a set of possible solutions. The algorithm will evaluate all the possible alternatives, keeping the best one and using it as a threshold to improve.
+It is a problem in which we need to complete a cycle passing through a set of points, being the distance between any pair of points known, without repeating any point and returning to the origin once all points have been visited.
 
-The problem in which I used this algorithm is the following:
+A clear example is the <a href="https://en.wikipedia.org/wiki/Travelling_salesman_problem">Travelling Salesman Problem</a>: Suppose there are several locations in a city that need to be visited, having the distances of every pair of points stored in a matrix. The objective is to complete the cycle following the optimal path, the one which minimize the traversed distance.
 
-Suppose you have several points on a map, and each point is separated from the other ones a distance, different from each point. We can built a matrix of distances, from each point to the rest of them. Now suppose that this points on the map are locations within a city, and that the problem is to visit every point starting for the first one, without repeating anyone, and returning to the original location at the end. This problem is called "Travel Salesman Problem" for obvious reasons.
-* It is important to recall that the the distance A-B could be different from the distance B-A (imagine that in a specific place, there is a one direction road, so is shorter going in one direction that the opposite).
-* It does not matter which is the startin point, because at the end the cycle will cover all the locations, the result would be the same starting at any othe location.
-* This problem needs big computational capacity, with each new location, the time to obtain a result increase exponentially. Trying to calculate the optimal cycle  with more than 12 locations could be a nightmare.
+In order to solve this problem, I have used the <b>Held-Karp algorithm</b>.
 
-The repository contains:
+## How is the algorithm?
+The Held-Karp algorithm is a brute search algorithm which belong to the family of the "branch and bound" ones.
 
-  A) An example of a distance matrix.
-  B) First implementation of the algorithm, which allow the user to see all the posibilities with their distances.
-  C) Second implementation of the algorithm, which do not show all the options, but is quite more efficient.
+An algorithm that belongs to the <a href="https://en.wikipedia.org/wiki/Branch_and_bound">Branch and bound</a> family is used to solve problems where we could obtain an optimal solution given a set of possible solutions. The algorithm will evaluate all the possible alternatives, keeping the best one and using it as a threshold to improve.
+
+This would be an example of the use of Held-Karp to this problem:
+<br><br>
+<img align="center" src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Branchbound.gif">
+
+## What is in the repository? 
+
+The repository contains an example of an input file, and 2 variants of the Held-Karp algorithm:
+
+### 1. Example.txt
+It is an example of a distance distance, where the different rows and columns refers to different locations. The main diagonal is always zero because the distance from one location to itself is always zero. Its important to know that the distance A-B could be different from the distance B-A.
+
+### 2. HK_Paths.java
+First implementation of the algorithm, which allow us to see all the posibilities with their distances. It is less eficient than the next implementation, because it needs to store all the paths with their corresponding distances to print them at the end of the process.
+
+### 3. HK_Optimal.java
+Final implementation of the algorithm, which do not show all the possible routes, just the optimal one. It is more efficient than the previous implementation.
+
+## Special considerations:
+* It is important to recall that <b>the distance A-B could be different from the distance B-A</b> (imagine a one-way street, going in one direction is shorter that the opposite).
+<br><br>
+* <b>It does not matter which is the starting point,</b> because at the end the cycle will cover all the locations, the result would be the same starting at any other location.
+<br><br>
+* <b>This problem needs big computational capacity.</b> With each new location, the time to calculate the optimal solution increase exponentially (more than 12 locations could be a nightmare).
