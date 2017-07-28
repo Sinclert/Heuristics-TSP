@@ -16,19 +16,18 @@ import java.util.Scanner;
  * B) If the list of vertices is not empty, lets decrease our problem space:
  *
  *      1) Consider each vertex in vertices as a starting point ("initial")
- *      2) Since we are considering "initial" as a starting point, we have to adjust the list of vertices, by removing "initial"
- *      3) Calculate the cost of visiting "initial" (costCurrentNode) + cost of visiting rest of vertices starting from there ("costChildren")
+ *      2) As "initial" is the starting point, we have to remove it from the list of vertices
+ *      3) Calculate the cost of visiting "initial" (costCurrentNode) + cost of visiting the rest from it ("costChildren")
  *      4) Return the minimum result from step 3
  */
 
 public class HK_Paths {
 
     /* ----------------------------- GLOBAL VARIABLES ------------------------------ */
-    public static int[][] distances;
-    public static int numSolutions;
-    public static int finalResults[];
-    public static String paths[];
-    public static int counter = 0;
+    private static int[][] distances;
+    private static int finalResults[];
+    private static String paths[];
+    private static int counter = 0;
 
 
     /* ------------------------------ MAIN FUNCTION -------------------------------- */
@@ -48,8 +47,8 @@ public class HK_Paths {
         int size = input.nextInt();
 
         // Global variables are initialized taking into account the size of the matrix
+        int numSolutions = factorial(size - 1);
         distances = new int[size][size];
-        numSolutions = factorial(size - 1);
         finalResults = new int[numSolutions];
         paths = new String[numSolutions];
 
@@ -102,12 +101,13 @@ public class HK_Paths {
     }
 
 
+
     /* ------------------------------- RECURSIVE FUNCTION ---------------------------- */
 
-    public static int procedure(int initial, int list[], String path, int costUntilHere) {
+    private static int procedure(int initial, int list[], String path, int costUntilHere) {
 
         // We concatenate the current path and the vertex taken as initial
-        path = path + "" + Integer.toString(initial) + " - ";
+        path = path + Integer.toString(initial) + " - ";
         int length = list.length;
         int newCostUntilHere;
 
@@ -124,21 +124,21 @@ public class HK_Paths {
             return (distances[initial][0]);
         }
 
+
         // Common case, where there are more than 1 node
         else {
 
-            int[] costChildren = new int[length];
             int[][] newList = new int[length][(length - 1)];
             int costCurrentNode, costChild;
-            int totalCost = 10000000;           // Big number to simulate infinity
+            int bestCost = Integer.MAX_VALUE;
 
             // For each of the nodes of the list
             for (int i = 0; i < length; i++) {
 
-                // First of all we construct our new list, the one to be passed to each recursion
+                // Each recursion new vertices list is constructed
                 for (int j = 0, k = 0; j < length; j++, k++) {
 
-                    // The first iteration is not taken into account due to avoid pass the select
+                    // The first iteration is not taken into account to avoid pass the select
                     if (j == i) {
                         k--;
                         continue;
@@ -153,23 +153,25 @@ public class HK_Paths {
                 newCostUntilHere = costCurrentNode + costUntilHere;
 
                 // RECURSIVE CALLS TO THE FUNCTION IN ORDER TO COMPUTE THE COSTS
-                costChildren[i] = procedure(list[i], newList[i], path, newCostUntilHere);
+                costChild = procedure(list[i], newList[i], path, newCostUntilHere);
 
                 // The cost of every child + the current node cost is computed
-                costChild = costChildren[i] + costCurrentNode;
+                int totalCost = costChild + costCurrentNode;
 
-                // Finally we select from the all possible children costs, the one with minimum value
-                if (costChild < totalCost) {
-                    totalCost = costChild;
+                // Finally we select from the minimum from all possible children costs
+                if (totalCost < bestCost) {
+                    bestCost = totalCost;
                 }
             }
 
-            return (totalCost);
+            return (bestCost);
         }
     }
 
+
+
     // Factorial function used to calculate the number of solutions
-    public static int factorial(int n) {
+    private static int factorial(int n) {
 
         if (n <= 1) return 1;
         else return (n * factorial(n - 1));

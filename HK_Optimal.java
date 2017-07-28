@@ -16,17 +16,17 @@ import java.util.Scanner;
  * B) If the list of vertices is not empty, lets decrease our problem space:
  *
  *      1) Consider each vertex in vertices as a starting point ("initial")
- *      2) Since we are considering "initial" as a starting point, we have to adjust the list of vertices, by removing "initial"
- *      3) Calculate the cost of visiting "initial" (costCurrentNode) + cost of visiting rest of vertices starting from there ("costChildren")
+ *      2) As "initial" is the starting point, we have to remove it from the list of vertices
+ *      3) Calculate the cost of visiting "initial" (costCurrentNode) + cost of visiting the rest from it ("costChildren")
  *      4) Return the minimum result from step 3
  */
 
 public class HK_Optimal {
 
     /* ----------------------------- GLOBAL VARIABLES ------------------------------ */
-    public static int[][] distances;
-    public static int optimalDistance = 0;
-    public static String optimalPath = "";
+    private static int[][] distances;
+    private static int optimalDistance = 0;
+    private static String optimalPath = "";
 
 
     /* ------------------------------ MAIN FUNCTION -------------------------------- */
@@ -88,10 +88,10 @@ public class HK_Optimal {
 
     /* ------------------------------- RECURSIVE FUNCTION ---------------------------- */
 
-    public static int procedure(int initial, int list[], String path, int costUntilHere) {
+    private static int procedure(int initial, int list[], String path, int costUntilHere) {
 
         // We concatenate the current path and the vertex taken as initial
-        path = path + "" + Integer.toString(initial) + " - ";
+        path = path + Integer.toString(initial) + " - ";
         int length = list.length;
         int newCostUntilHere;
 
@@ -116,26 +116,27 @@ public class HK_Optimal {
             return (distances[initial][0]);
         }
 
-        // If the traversed branch reaches a point where the cost is higher than the stored one: stop traversing.
+
+        // If the traversed branch has higher cost than the stored one: stop traversing
         else if (costUntilHere > optimalDistance && optimalDistance != 0){
             return 0;
         }
 
+
         // Common case, when there are several nodes in the list
         else {
 
-            int[] costChildren = new int[length];
             int[][] newList = new int[length][(length - 1)];
             int costCurrentNode, costChild;
-            int totalCost = 10000000;           // Big number to simulate infinity
+            int bestCost = Integer.MAX_VALUE;
 
             // For each of the nodes of the list
             for (int i = 0; i < length; i++) {
 
-                // First of all we construct our new list, the one to be passed to each recursion
+                // Each recursion new vertices list is constructed
                 for (int j = 0, k = 0; j < length; j++, k++) {
 
-                    // The first iteration is not taken into account due to avoid pass the select
+                    // The first iteration is not taken into account to avoid pass the select
                     if (j == i) {
                         k--;
                         continue;
@@ -150,18 +151,18 @@ public class HK_Optimal {
                 newCostUntilHere = costCurrentNode + costUntilHere;
 
                 // RECURSIVE CALLS TO THE FUNCTION IN ORDER TO COMPUTE THE COSTS
-                costChildren[i] = procedure(list[i], newList[i], path, newCostUntilHere);
+                costChild = procedure(list[i], newList[i], path, newCostUntilHere);
 
                 // The cost of every child + the current node cost is computed
-                costChild = costChildren[i] + costCurrentNode;
+                int totalCost = costChild + costCurrentNode;
 
-                // Finally we select from the all possible children costs, the one with minimum value
-                if (costChild < totalCost) {
-                    totalCost = costChild;
+                // Finally we select from the minimum from all possible children costs
+                if (totalCost < bestCost) {
+                    bestCost = totalCost;
                 }
             }
 
-            return (totalCost);
+            return (bestCost);
         }
     }
 }
