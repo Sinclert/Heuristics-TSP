@@ -46,7 +46,7 @@ public class HK_Paths {
         System.out.println("Please, introduce the size of the matrix");
         int size = input.nextInt();
 
-        // Global variables are initialized taking into account the size of the matrix
+        // Global variables are initialized considering the size of the matrix
         int numSolutions = factorial(size - 1);
         distances = new int[size][size];
         finalResults = new int[numSolutions];
@@ -104,20 +104,19 @@ public class HK_Paths {
 
     /* ------------------------------- RECURSIVE FUNCTION ---------------------------- */
 
-    private static int procedure(int initial, int list[], String path, int costUntilHere) {
+    private static int procedure(int initial, int vertices[], String path, int costUntilHere) {
 
         // We concatenate the current path and the vertex taken as initial
         path = path + Integer.toString(initial) + " - ";
-        int length = list.length;
+        int length = vertices.length;
         int newCostUntilHere;
 
 
         // Exit case, if there are no more options to evaluate (last node)
         if (length == 0) {
-            path = path + "0";
 
             // Both results, numerical distances and paths to those distances, are stored
-            paths[counter] = path;
+            paths[counter] = path + "0";
             finalResults[counter] = costUntilHere + distances[initial][0];
 
             counter++;
@@ -128,7 +127,7 @@ public class HK_Paths {
         // Common case, where there are more than 1 node
         else {
 
-            int[][] newList = new int[length][(length - 1)];
+            int[][] newVertices = new int[length][(length - 1)];
             int costCurrentNode, costChild;
             int bestCost = Integer.MAX_VALUE;
 
@@ -138,22 +137,22 @@ public class HK_Paths {
                 // Each recursion new vertices list is constructed
                 for (int j = 0, k = 0; j < length; j++, k++) {
 
-                    // The first iteration is not taken into account to avoid pass the select
+                    // The current child is not stored in the new vertices array
                     if (j == i) {
                         k--;
                         continue;
                     }
-                    newList[i][k] = list[j];
+                    newVertices[i][k] = vertices[j];
                 }
 
                 // Cost of arriving the current node from its parent
-                costCurrentNode = distances[initial][list[i]];
+                costCurrentNode = distances[initial][vertices[i]];
 
                 // Here the cost to be passed to the recursive function is computed
                 newCostUntilHere = costCurrentNode + costUntilHere;
 
                 // RECURSIVE CALLS TO THE FUNCTION IN ORDER TO COMPUTE THE COSTS
-                costChild = procedure(list[i], newList[i], path, newCostUntilHere);
+                costChild = procedure(vertices[i], newVertices[i], path, newCostUntilHere);
 
                 // The cost of every child + the current node cost is computed
                 int totalCost = costChild + costCurrentNode;

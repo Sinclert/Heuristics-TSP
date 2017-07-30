@@ -25,7 +25,7 @@ public class HK_Optimal {
 
     /* ----------------------------- GLOBAL VARIABLES ------------------------------ */
     private static int[][] distances;
-    private static int optimalDistance = 0;
+    private static int optimalDistance = Integer.MAX_VALUE;
     private static String optimalPath = "";
 
 
@@ -45,7 +45,7 @@ public class HK_Optimal {
         System.out.println("Please, introduce the size of the matrix");
         int size = input.nextInt();
 
-        // Global variables are initialized taking into account the size of the matrix
+        // Distances array is initiated considering the size of the matrix
         distances = new int[size][size];
 
         // The file in that location is opened
@@ -88,37 +88,30 @@ public class HK_Optimal {
 
     /* ------------------------------- RECURSIVE FUNCTION ---------------------------- */
 
-    private static int procedure(int initial, int list[], String path, int costUntilHere) {
+    private static int procedure(int initial, int vertices[], String path, int costUntilHere) {
 
         // We concatenate the current path and the vertex taken as initial
         path = path + Integer.toString(initial) + " - ";
-        int length = list.length;
+        int length = vertices.length;
         int newCostUntilHere;
 
 
         // Exit case, if there are no more options to evaluate (last node)
         if (length == 0) {
-
-            path = path + "0";
             newCostUntilHere = costUntilHere + distances[initial][0];
 
-            // If it is the first evaluated branch (optimalDistance = 0)
-            if (optimalDistance == 0){
+            // If its cost is lower than the stored one
+            if (newCostUntilHere < optimalDistance){
                 optimalDistance = newCostUntilHere;
-            }
-
-            // If it is another branch and its value is lower than the stored one
-            else if (newCostUntilHere < optimalDistance){
-                optimalDistance = newCostUntilHere;
-                optimalPath = path;
+                optimalPath = path + "0";
             }
 
             return (distances[initial][0]);
         }
 
 
-        // If the traversed branch has higher cost than the stored one: stop traversing
-        else if (costUntilHere > optimalDistance && optimalDistance != 0){
+        // If the current branch has higher cost than the stored one: stop traversing
+        else if (costUntilHere > optimalDistance){
             return 0;
         }
 
@@ -126,7 +119,7 @@ public class HK_Optimal {
         // Common case, when there are several nodes in the list
         else {
 
-            int[][] newList = new int[length][(length - 1)];
+            int[][] newVertices = new int[length][(length - 1)];
             int costCurrentNode, costChild;
             int bestCost = Integer.MAX_VALUE;
 
@@ -136,22 +129,22 @@ public class HK_Optimal {
                 // Each recursion new vertices list is constructed
                 for (int j = 0, k = 0; j < length; j++, k++) {
 
-                    // The first iteration is not taken into account to avoid pass the select
+                    // The current child is not stored in the new vertices array
                     if (j == i) {
                         k--;
                         continue;
                     }
-                    newList[i][k] = list[j];
+                    newVertices[i][k] = vertices[j];
                 }
 
                 // Cost of arriving the current node from its parent
-                costCurrentNode = distances[initial][list[i]];
+                costCurrentNode = distances[initial][vertices[i]];
 
                 // Here the cost to be passed to the recursive function is computed
                 newCostUntilHere = costCurrentNode + costUntilHere;
 
                 // RECURSIVE CALLS TO THE FUNCTION IN ORDER TO COMPUTE THE COSTS
-                costChild = procedure(list[i], newList[i], path, newCostUntilHere);
+                costChild = procedure(vertices[i], newVertices[i], path, newCostUntilHere);
 
                 // The cost of every child + the current node cost is computed
                 int totalCost = costChild + costCurrentNode;
